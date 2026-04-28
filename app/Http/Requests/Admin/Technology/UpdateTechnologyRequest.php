@@ -41,6 +41,7 @@ class UpdateTechnologyRequest extends FormRequest
                 'max:60',
                 Rule::unique('technologies', 'slug')->ignore($id)
             ],
+            'icon' => ['nullable', 'string', 'max:100'],
             'color' => ['nullable', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ];
     }

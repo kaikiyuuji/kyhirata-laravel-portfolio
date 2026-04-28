@@ -14,6 +14,7 @@
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
             <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ícone</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cor</th>
                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
@@ -22,6 +23,11 @@
         <tbody class="bg-white divide-y divide-gray-200">
             @forelse($technologies as $technology)
             <tr>
+                <td class="px-6 py-4">
+                    <div class="text-2xl text-gray-600">
+                        <i class="{{ $technology->display_icon }}"></i>
+                    </div>
+                </td>
                 <td class="px-6 py-4 font-medium text-gray-900">{{ $technology->name }}</td>
                 <td class="px-6 py-4">
                     @if($technology->color)
@@ -44,7 +50,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="3" class="px-6 py-10 text-center text-gray-400">Nenhuma tecnologia cadastrada.</td>
+                <td colspan="4" class="px-6 py-10 text-center text-gray-400">Nenhuma tecnologia cadastrada.</td>
             </tr>
             @endforelse
         </tbody>

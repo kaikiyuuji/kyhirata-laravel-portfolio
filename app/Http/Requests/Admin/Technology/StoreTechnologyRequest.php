@@ -28,6 +28,7 @@ class StoreTechnologyRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:50', 'unique:technologies,name'],
             'slug' => ['required', 'string', 'max:60', 'unique:technologies,slug'],
+            'icon' => ['nullable', 'string', 'max:100'],
             'color' => ['nullable', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ];
     }

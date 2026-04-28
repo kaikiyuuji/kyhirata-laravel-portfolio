@@ -74,7 +74,8 @@
                         
                         <div class="flex flex-wrap gap-2 mb-4">
                             @foreach($project->technologies as $tech)
-                                <span class="px-2 py-1 text-xs font-semibold rounded" style="background-color: {{ $tech->color ?? '#e2e8f0' }}; color: {{ $tech->color ? '#fff' : '#475569' }}">
+                                <span class="px-2 py-1 text-xs font-semibold rounded flex items-center gap-1.5" style="background-color: {{ $tech->color ?? '#e2e8f0' }}; color: {{ $tech->color ? '#fff' : '#475569' }}">
+                                    <i class="{{ $tech->display_icon }}"></i>
                                     {{ $tech->name }}
                                 </span>
                             @endforeach
