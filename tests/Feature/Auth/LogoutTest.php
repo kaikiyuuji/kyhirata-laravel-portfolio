@@ -12,43 +12,34 @@ class LogoutTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Creates and authenticates an admin, returning the user and the token.
+     * Helper: cria e autentica o admin.
      */
-    protected function actingAsAdmin(): array
+    private function createAndAuthenticateAdmin(): User
     {
         $admin = User::factory()->create([
             'email' => config('admin.email'),
             'password' => Hash::make('password'),
         ]);
 
-        $response = $this->postJson('/api/v1/admin/login', [
-            'email' => config('admin.email'),
-            'password' => 'password',
-        ]);
+        $this->actingAs($admin);
 
-        return [$admin, $response->json('token')];
+        return $admin;
     }
 
-    public function test_it_ends_authenticated_admin_session(): void
+    public function test_authenticated_admin_can_logout(): void
     {
-        [$admin, $token] = $this->actingAsAdmin();
+        $this->createAndAuthenticateAdmin();
 
-        $response = $this->withToken($token)
-            ->postJson('/api/v1/admin/logout');
+        $response = $this->post('/logout');
 
-        $response->assertStatus(200)
-            ->assertJsonPath('message', 'Sessão encerrada.');
-
-        // Token deve ser inválido após logout
-        $this->withToken($token)
-            ->getJson('/api/v1/admin/me')
-            ->assertStatus(401);
+        $response->assertRedirect('/');
+        $this->assertGuest();
     }
 
-    public function test_it_blocks_logout_without_authentication(): void
+    public function test_logout_requires_authentication(): void
     {
-        $response = $this->postJson('/api/v1/admin/logout');
+        $response = $this->post('/logout');
 
-        $response->assertStatus(401);
+        $response->assertRedirect('/login');
     }
-}
+}
