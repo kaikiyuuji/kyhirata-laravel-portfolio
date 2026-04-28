@@ -16,34 +16,44 @@ class SocialLinkController extends Controller
 
     public function index()
     {
-        return response()->json($this->repository->all());
+        $socialLinks = $this->repository->all();
+
+        return view('admin.social-links.index', compact('socialLinks'));
     }
 
     public function create()
     {
-        return response()->json([]);
+        return view('admin.social-links.create');
     }
 
     public function store(StoreSocialLinkRequest $request, CreateSocialLinkAction $action)
     {
-        $socialLink = $action->execute($request->validated());
-        return response()->json(['data' => $socialLink], 201);
+        $action->execute($request->validated());
+
+        return redirect()->route('admin.social-links.index')
+            ->with('success', 'Link social criado com sucesso.');
     }
 
     public function edit(int $id)
     {
-        return response()->json($this->repository->findById($id));
+        $socialLink = $this->repository->findById($id);
+
+        return view('admin.social-links.edit', compact('socialLink'));
     }
 
     public function update(UpdateSocialLinkRequest $request, UpdateSocialLinkAction $action, int $id)
     {
-        $socialLink = $action->execute($id, $request->validated());
-        return response()->json(['data' => $socialLink]);
+        $action->execute($id, $request->validated());
+
+        return redirect()->route('admin.social-links.index')
+            ->with('success', 'Link social atualizado com sucesso.');
     }
 
     public function destroy(DeleteSocialLinkAction $action, int $id)
     {
         $action->execute($id);
-        return response()->json(['message' => 'Deletado com sucesso.']);
+
+        return redirect()->route('admin.social-links.index')
+            ->with('success', 'Link social removido com sucesso.');
     }
 }
