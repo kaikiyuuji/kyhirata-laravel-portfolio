@@ -16,34 +16,44 @@ class TechnologyController extends Controller
 
     public function index()
     {
-        return response()->json($this->repository->all());
+        $technologies = $this->repository->all();
+
+        return view('admin.technologies.index', compact('technologies'));
     }
 
     public function create()
     {
-        return response()->json([]);
+        return view('admin.technologies.create');
     }
 
     public function store(StoreTechnologyRequest $request, CreateTechnologyAction $action)
     {
-        $technology = $action->execute($request->validated());
-        return response()->json(['data' => $technology], 201);
+        $action->execute($request->validated());
+
+        return redirect()->route('admin.technologies.index')
+            ->with('success', 'Tecnologia criada com sucesso.');
     }
 
     public function edit(int $id)
     {
-        return response()->json($this->repository->findById($id));
+        $technology = $this->repository->findById($id);
+
+        return view('admin.technologies.edit', compact('technology'));
     }
 
     public function update(UpdateTechnologyRequest $request, UpdateTechnologyAction $action, int $id)
     {
-        $technology = $action->execute($id, $request->validated());
-        return response()->json(['data' => $technology]);
+        $action->execute($id, $request->validated());
+
+        return redirect()->route('admin.technologies.index')
+            ->with('success', 'Tecnologia atualizada com sucesso.');
     }
 
     public function destroy(DeleteTechnologyAction $action, int $id)
     {
         $action->execute($id);
-        return response()->json(['message' => 'Deletado com sucesso.']);
+
+        return redirect()->route('admin.technologies.index')
+            ->with('success', 'Tecnologia removida com sucesso.');
     }
 }
