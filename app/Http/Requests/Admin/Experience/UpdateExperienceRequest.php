@@ -9,8 +9,7 @@ class UpdateExperienceRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $experience = $this->route('experience') ?? clone $this->route('id') ?? Experience::class;
-        return $this->user()->can('update', $experience);
+        return \Illuminate\Support\Facades\Gate::allows('isAdmin');
     }
 
     protected function prepareForValidation(): void

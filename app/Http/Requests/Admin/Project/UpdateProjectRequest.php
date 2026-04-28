@@ -10,8 +10,7 @@ class UpdateProjectRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $project = $this->route('project') ?? $this->route('id') ?? Project::class;
-        return $this->user()->can('update', $project);
+        return \Illuminate\Support\Facades\Gate::allows('isAdmin');
     }
 
     protected function prepareForValidation(): void

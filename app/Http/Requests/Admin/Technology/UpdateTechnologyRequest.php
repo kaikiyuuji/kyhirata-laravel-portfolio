@@ -11,8 +11,7 @@ class UpdateTechnologyRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $technology = $this->route('technology') ?? $this->route('id') ?? Technology::class;
-        return $this->user()->can('update', $technology);
+        return \Illuminate\Support\Facades\Gate::allows('isAdmin');
     }
 
     protected function prepareForValidation(): void
@@ -35,6 +34,12 @@ class UpdateTechnologyRequest extends FormRequest
                 'string', 
                 'max:50', 
                 Rule::unique('technologies', 'name')->ignore($id)
+            ],
+            'slug' => [
+                'required',
+                'string',
+                'max:60',
+                Rule::unique('technologies', 'slug')->ignore($id)
             ],
             'color' => ['nullable', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ];

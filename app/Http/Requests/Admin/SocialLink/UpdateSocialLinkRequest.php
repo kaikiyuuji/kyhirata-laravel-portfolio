@@ -9,8 +9,7 @@ class UpdateSocialLinkRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $socialLink = $this->route('social_link') ?? $this->route('id') ?? SocialLink::class;
-        return $this->user()->can('update', $socialLink);
+        return \Illuminate\Support\Facades\Gate::allows('isAdmin');
     }
 
     protected function prepareForValidation(): void
