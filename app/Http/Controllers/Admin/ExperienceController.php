@@ -16,34 +16,44 @@ class ExperienceController extends Controller
 
     public function index()
     {
-        return response()->json($this->repository->all());
+        $experiences = $this->repository->all();
+
+        return view('admin.experiences.index', compact('experiences'));
     }
 
     public function create()
     {
-        return response()->json([]);
+        return view('admin.experiences.create');
     }
 
     public function store(StoreExperienceRequest $request, CreateExperienceAction $action)
     {
-        $experience = $action->execute($request->validated());
-        return response()->json(['data' => $experience], 201);
+        $action->execute($request->validated());
+
+        return redirect()->route('admin.experiences.index')
+            ->with('success', 'Experiência criada com sucesso.');
     }
 
     public function edit(int $id)
     {
-        return response()->json($this->repository->findById($id));
+        $experience = $this->repository->findById($id);
+
+        return view('admin.experiences.edit', compact('experience'));
     }
 
     public function update(UpdateExperienceRequest $request, UpdateExperienceAction $action, int $id)
     {
-        $experience = $action->execute($id, $request->validated());
-        return response()->json(['data' => $experience]);
+        $action->execute($id, $request->validated());
+
+        return redirect()->route('admin.experiences.index')
+            ->with('success', 'Experiência atualizada com sucesso.');
     }
 
     public function destroy(DeleteExperienceAction $action, int $id)
     {
         $action->execute($id);
-        return response()->json(['message' => 'Deletado com sucesso.']);
+
+        return redirect()->route('admin.experiences.index')
+            ->with('success', 'Experiência removida com sucesso.');
     }
 }
