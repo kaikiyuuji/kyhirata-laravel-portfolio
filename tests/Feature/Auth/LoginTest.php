@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class AdminLoginTest extends TestCase
+class LoginTest extends TestCase
 {
     use RefreshDatabase;
 

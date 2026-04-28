@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Admin\AboutMe;
+namespace Tests\Feature\Admin;
 
 use App\Models\AboutMe;
 use App\Models\User;
@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class ManageAboutMeTest extends TestCase
+class AboutMeTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -127,3 +127,4 @@ class ManageAboutMeTest extends TestCase
             ->assertJsonValidationErrors(['availability_status']);
     }
 }
+

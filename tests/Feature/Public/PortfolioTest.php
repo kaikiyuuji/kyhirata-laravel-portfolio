@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Security;
+namespace Tests\Feature\Public;
 
 use App\Models\AboutMe;
 use App\Models\Experience;
@@ -10,7 +10,7 @@ use App\Models\Technology;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PublicEndpointsTest extends TestCase
+class PortfolioTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -303,3 +303,4 @@ class PublicEndpointsTest extends TestCase
             ->assertStatus(422);
     }
 }
+

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ProjectRepositoryTest extends TestCase
+class EloquentProjectRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -160,3 +160,4 @@ class ProjectRepositoryTest extends TestCase
         ]);
     }
 }
+

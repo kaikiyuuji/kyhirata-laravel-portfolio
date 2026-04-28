@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Admin\Project;
+namespace Tests\Feature\Admin;
 
 use App\Models\Project;
 use App\Models\Technology;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class ManageProjectTest extends TestCase
+class ProjectTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -316,3 +316,4 @@ class ManageProjectTest extends TestCase
             ->assertStatus(401);
     }
 }
+
