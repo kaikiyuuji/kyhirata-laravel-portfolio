@@ -2,6 +2,7 @@
 
 namespace App\Actions\Admin\Project;
 
+use App\Jobs\ProcessThumbnailJob;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
 use App\Services\FileStorageService;
 use Illuminate\Http\UploadedFile;
@@ -25,6 +26,7 @@ class UpdateProjectAction
                     $this->fileStorageService->delete($project->thumbnail_path);
                 }
                 $data['thumbnail_path'] = $this->fileStorageService->store($data['thumbnail'], 'projects');
+                ProcessThumbnailJob::dispatch($data['thumbnail_path']);
             }
             unset($data['thumbnail']);
 

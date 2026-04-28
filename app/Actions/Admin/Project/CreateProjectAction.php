@@ -2,6 +2,7 @@
 
 namespace App\Actions\Admin\Project;
 
+use App\Jobs\ProcessThumbnailJob;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
 use App\Services\FileStorageService;
 use Illuminate\Http\UploadedFile;
@@ -20,6 +21,7 @@ class CreateProjectAction
             // Upload de thumbnail
             if (isset($data['thumbnail']) && $data['thumbnail'] instanceof UploadedFile) {
                 $data['thumbnail_path'] = $this->fileStorageService->store($data['thumbnail'], 'projects');
+                ProcessThumbnailJob::dispatch($data['thumbnail_path']);
             }
             unset($data['thumbnail']);
 
