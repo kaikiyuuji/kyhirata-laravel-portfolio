@@ -28,8 +28,9 @@
                     <a href="{{ $link->url }}" target="_blank" class="text-blue-600 hover:underline text-sm truncate max-w-xs block">{{ $link->url }}</a>
                 </td>
                 <td class="px-6 py-4">
-                    <span class="font-mono text-sm text-gray-500">{{ $link->icon }}</span>
-                    @if($link->icon) <i class="{{ $link->icon }} ml-2 text-gray-600"></i> @endif
+                    <div class="text-3xl">
+                        <i class="{{ $link->display_icon }}"></i>
+                    </div>
                 </td>
                 <td class="px-6 py-4 text-right space-x-2">
                     <a href="{{ route('admin.social-links.edit', $link->id) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Editar</a>

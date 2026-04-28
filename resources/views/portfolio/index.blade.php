@@ -103,7 +103,7 @@
         <div class="flex justify-center gap-6 mt-6">
             @foreach($socialLinks as $link)
                 <a href="{{ $link->url }}" target="_blank" class="text-gray-500 hover:text-blue-600 text-4xl transition-colors" title="{{ $link->platform }}">
-                    <i class="{{ $link->icon }}"></i>
+                    <i class="{{ $link->display_icon }}"></i>
                 </a>
             @endforeach
         </div>

@@ -11,17 +11,21 @@
     </div>
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">
-            Ícone <span class="text-gray-400 text-xs">(classe Font Awesome, ex: <code>fab fa-github</code>)</span>
+            Ícone <span class="text-gray-400 text-xs">(classe Devicon, ex: <code>devicon-github-original</code>)</span>
         </label>
         <div class="flex gap-3 items-center">
-            <input type="text" name="icon" id="icon_input" value="{{ old('icon', $socialLink->icon ?? '') }}" placeholder="fab fa-github" class="flex-1 border border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm">
-            <span class="text-2xl text-gray-500 w-8 text-center"><i id="icon_preview" class="{{ old('icon', $socialLink->icon ?? '') }}"></i></span>
+            <input type="text" name="icon" id="icon_input" value="{{ old('icon', $socialLink->icon ?? '') }}" placeholder="devicon-github-original" class="flex-1 border border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm">
+            <span class="text-3xl text-gray-700 w-10 text-center"><i id="icon_preview" class="{{ $socialLink->display_icon ?? '' }}"></i></span>
+            <a href="https://devicon.dev/" target="_blank" class="bg-gray-100 border border-gray-300 px-3 py-2 rounded text-sm text-gray-600 hover:bg-gray-200" title="Procurar ícones">
+                <i class="fas fa-search"></i>
+            </a>
         </div>
         <script>
             document.getElementById('icon_input').addEventListener('input', function() {
                 document.getElementById('icon_preview').className = this.value;
             });
         </script>
+        <p class="text-xs text-gray-500 mt-1">Deixe em branco para usar o ícone padrão baseado na plataforma.</p>
         @error('icon') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
     </div>
     <div>
