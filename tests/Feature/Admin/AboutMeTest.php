@@ -12,119 +12,108 @@ class AboutMeTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Creates and authenticates an admin, returning the user and the token.
-     */
-    protected function actingAsAdmin(): array
+    private function actingAsAdmin(): User
     {
-        $admin = User::factory()->admin()->create([
+        $admin = User::factory()->create([
+            'email' => config('admin.email'),
             'password' => Hash::make('password'),
         ]);
+        $this->actingAs($admin);
 
-        $response = $this->postJson('/api/v1/admin/login', [
-            'email' => $admin->email,
-            'password' => 'password',
-        ]);
-
-        return [$admin, $response->json('token')];
+        return $admin;
     }
 
-    public function test_it_allows_admin_to_create_about_me_record(): void
+    private function validData(array $overrides = []): array
     {
-        [$admin, $token] = $this->actingAsAdmin();
-
-        $response = $this->withToken($token)
-            ->postJson('/api/v1/admin/about-me', [
-                'title'               => 'Backend Developer',
-                'description'         => str_repeat('Descrição. ', 20),
-                'years_of_experience' => 5,
-                'availability_status' => 'open',
-                'is_active'           => true,
-            ]);
-
-        $response->assertStatus(201)
-            ->assertJsonPath('title', 'Backend Developer');
+        return array_merge([
+            'name' => 'Kaiki Hirata',
+            'title' => 'Dev Full Stack',
+            'bio' => 'Desenvolvedor apaixonado por tecnologia.',
+            'email' => 'kaiki@portfolio.test',
+            'location' => 'São Paulo, BR',
+            'is_available_for_work' => 1,
+        ], $overrides);
     }
 
-    public function test_it_deactivates_other_records_when_activating_a_new_one(): void
+    public function test_edit_returns_200_with_current_data(): void
     {
-        [$admin, $token] = $this->actingAsAdmin();
+        $this->actingAsAdmin();
 
-        $existing = AboutMe::factory()->create(['is_active' => true]);
+        $response = $this->get(route('admin.about.edit'));
 
-        $this->withToken($token)
-            ->postJson('/api/v1/admin/about-me', [
-                'title'               => 'Novo Sobre Mim Ativo',
-                'description'         => str_repeat('Bio. ', 20),
-                'years_of_experience' => 3,
-                'is_active'           => true,
-            ])
-            ->assertStatus(201);
-
-        // O registro anterior deve estar inativo
-        $this->assertDatabaseHas('about_mes', [
-            'id'        => $existing->id,
-            'is_active' => false,
-        ]);
+        $response->assertStatus(200);
     }
 
-    public function test_it_allows_admin_to_list_records(): void
+    public function test_update_with_valid_data_changes_record(): void
     {
-        [$admin, $token] = $this->actingAsAdmin();
-        AboutMe::factory()->count(2)->create();
+        $this->actingAsAdmin();
 
-        $this->withToken($token)
-            ->getJson('/api/v1/admin/about-me')
-            ->assertStatus(200)
-            ->assertJsonStructure(['data']);
+        $response = $this->put(route('admin.about.update'), $this->validData());
+
+        $response->assertRedirect(route('admin.about.edit'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('about_me', ['name' => 'Kaiki Hirata']);
     }
 
-    public function test_it_allows_admin_to_soft_delete_and_restore_record(): void
+    public function test_update_with_invalid_data_returns_errors(): void
     {
-        [$admin, $token] = $this->actingAsAdmin();
-        $record = AboutMe::factory()->create();
+        $this->actingAsAdmin();
 
-        // Deletar
-        $this->withToken($token)
-            ->deleteJson("/api/v1/admin/about-me/{$record->id}")
-            ->assertStatus(204);
+        $response = $this->put(route('admin.about.update'), $this->validData(['name' => '']));
 
-        $this->assertSoftDeleted('about_mes', ['id' => $record->id]);
-
-        // Restaurar
-        $this->withToken($token)
-            ->postJson("/api/v1/admin/about-me/{$record->id}/restore")
-            ->assertStatus(200);
-
-        $this->assertDatabaseHas('about_mes', [
-            'id'         => $record->id,
-            'deleted_at' => null,
-        ]);
+        $response->assertSessionHasErrors(['name']);
     }
 
-    public function test_it_validates_required_fields_on_creation(): void
+    public function test_no_create_route_exists_for_about_me(): void
     {
-        [$admin, $token] = $this->actingAsAdmin();
+        $this->actingAsAdmin();
 
-        $this->withToken($token)
-            ->postJson('/api/v1/admin/about-me', [])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['title', 'description', 'years_of_experience']);
+        $response = $this->get('/admin/about/create');
+
+        $response->assertStatus(404);
     }
 
-    public function test_it_rejects_invalid_availability_status(): void
+    public function test_no_destroy_route_exists_for_about_me(): void
     {
-        [$admin, $token] = $this->actingAsAdmin();
+        $this->actingAsAdmin();
 
-        $this->withToken($token)
-            ->postJson('/api/v1/admin/about-me', [
-                'title'               => 'Dev',
-                'description'         => str_repeat('Bio. ', 20),
-                'years_of_experience' => 3,
-                'availability_status' => 'DISPONIVEL', // valor inválido
-            ])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['availability_status']);
+        $response = $this->delete('/admin/about');
+
+        $response->assertStatus(405);
+    }
+
+    // --- Validação ---
+
+    public function test_name_max_length_validation(): void
+    {
+        $this->actingAsAdmin();
+
+        $response = $this->put(route('admin.about.update'), $this->validData([
+            'name' => str_repeat('A', 101),
+        ]));
+
+        $response->assertSessionHasErrors(['name']);
+    }
+
+    public function test_email_must_be_valid(): void
+    {
+        $this->actingAsAdmin();
+
+        $response = $this->put(route('admin.about.update'), $this->validData([
+            'email' => 'invalid-email',
+        ]));
+
+        $response->assertSessionHasErrors(['email']);
+    }
+
+    public function test_bio_max_length_validation(): void
+    {
+        $this->actingAsAdmin();
+
+        $response = $this->put(route('admin.about.update'), $this->validData([
+            'bio' => str_repeat('A', 3001),
+        ]));
+
+        $response->assertSessionHasErrors(['bio']);
     }
 }
-
