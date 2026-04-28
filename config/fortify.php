@@ -119,6 +119,8 @@ return [
         'two-factor' => 'two-factor',
     ],
 
+    'login_throttle' => env('FORTIFY_LOGIN_THROTTLE', 5),
+
     /*
     |--------------------------------------------------------------------------
     | Register View Routes
