@@ -28,6 +28,7 @@ class UpdateProjectRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:200'],
+            'slug' => ['required', 'string', 'max:255', \Illuminate\Validation\Rule::unique('projects', 'slug')->ignore($this->route('project') ?? $this->route('id'))],
             'description' => ['required', 'string', 'max:5000'],
             'github_url' => ['nullable', 'url', 'max:500', 'starts_with:https://github.com'],
             'demo_url' => ['nullable', 'url', 'max:500'],
