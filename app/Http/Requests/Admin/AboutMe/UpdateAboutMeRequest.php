@@ -9,8 +9,8 @@ class UpdateAboutMeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // Delega para a Policy correspondente
-        return $this->user()->can('update', AboutMe::class);
+        // Delega para o Gate global, pois AboutMe não possui Policy própria
+        return \Illuminate\Support\Facades\Gate::allows('isAdmin');
     }
 
     protected function prepareForValidation(): void
