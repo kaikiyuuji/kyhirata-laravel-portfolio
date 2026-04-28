@@ -16,12 +16,13 @@ class LogoutTest extends TestCase
      */
     protected function actingAsAdmin(): array
     {
-        $admin = User::factory()->admin()->create([
+        $admin = User::factory()->create([
+            'email' => config('admin.email'),
             'password' => Hash::make('password'),
         ]);
 
         $response = $this->postJson('/api/v1/admin/login', [
-            'email' => $admin->email,
+            'email' => config('admin.email'),
             'password' => 'password',
         ]);
 
