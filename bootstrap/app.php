@@ -24,10 +24,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->redirectTo(
-            guests: '/login',
+            guests: '/',
             users: '/admin/dashboard',
         );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Redireciona qualquer rota não encontrada (404) para a Home
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+            return redirect('/');
+        });
+
+        // Redireciona qualquer acesso negado (403) para a Home
+        $exceptions->render(function (\Illuminate\Auth\Access\AuthorizationException $e) {
+            return redirect('/');
+        });
     })->create();

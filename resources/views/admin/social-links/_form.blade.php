@@ -29,4 +29,10 @@
         <input type="number" name="order" value="{{ old('order', $socialLink->order ?? 0) }}" min="0" class="w-full border border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
         @error('order') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
     </div>
+    <div class="flex items-center gap-2">
+        <input type="hidden" name="is_visible" value="0">
+        <input type="checkbox" name="is_visible" id="is_visible" value="1" {{ old('is_visible', $socialLink->is_visible ?? true) ? 'checked' : '' }} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+        <label for="is_visible" class="text-sm font-medium text-gray-700">Visível no Portfólio</label>
+        @error('is_visible') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+    </div>
 </div>
