@@ -38,6 +38,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Illuminate\Support\Facades\Gate::define('isAdmin', function ($user) {
+            return $user->email === config('admin.email');
+        });
+
+        \Illuminate\Support\Facades\Gate::policy(\App\Models\Experience::class, \App\Policies\ExperiencePolicy::class);
+        \Illuminate\Support\Facades\Gate::policy(\App\Models\Project::class, \App\Policies\ProjectPolicy::class);
+        \Illuminate\Support\Facades\Gate::policy(\App\Models\Technology::class, \App\Policies\TechnologyPolicy::class);
+        \Illuminate\Support\Facades\Gate::policy(\App\Models\SocialLink::class, \App\Policies\SocialLinkPolicy::class);
     }
 }
