@@ -11,16 +11,16 @@ class AboutMeController extends Controller
 {
     public function edit(AboutMeRepositoryInterface $repository)
     {
-        return response()->json($repository->get());
+        $aboutMe = $repository->get();
+
+        return view('admin.about.edit', compact('aboutMe'));
     }
 
     public function update(UpdateAboutMeRequest $request, UpdateAboutMeAction $action)
     {
-        $aboutMe = $action->execute($request->validated());
-        
-        return response()->json([
-            'message' => 'About Me atualizado com sucesso.', 
-            'data' => $aboutMe
-        ]);
+        $action->execute($request->validated());
+
+        return redirect()->route('admin.about.edit')
+            ->with('success', 'Informações atualizadas com sucesso.');
     }
 }
